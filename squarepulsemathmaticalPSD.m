@@ -7,7 +7,7 @@
 frequency = 1000000;
 bandwidth = 500000;
 Ts = 1/bandwidth;
-frequency = linspace(0, frequency, frequency);
+frequency = linspace(-frequency, frequency, frequency);
 
 S = 5 * Ts * (sinc(pi * frequency * Ts)).^2;
 
@@ -27,7 +27,7 @@ prect=prect/norm(prect);
 prectmatch=prect(end:-1:1);
 
 % Generating random signal data for polar signaling
-dataArray = zeros(500, 1);
+dataArray = zeros(1000, 1);
 for i=1:500
    num = round(3*rand(1));
    switch (num) 
@@ -42,22 +42,16 @@ for i=1:500
    end 
 end
 transpose(dataArray);
-upData = upsample(s_data,fsamp);
+upData = upsample(dataArray,fsamp);
 
 %pass data through rectangular filter
 message=conv(upData,prect);
 
-%Perfect channel
-
-%Pass received message through matching rectangular filter
-%PSDSim = conv(message,prectmatch);
-
-
-[Psd2,f]=pwelch(xrect, [], [], [], 'twosided' ,f_ovsamp);
-
+[Psd,f]=pwelch(message, [], [], [], 'twosided' ,fsamp);
 
 figure(2);
-plot(PSDSim)
-xlabel('Frequency (MHz)')
+figpsd2=semilogy(f-f_ovsamp/2,fftshift(Psd));
+
+xlabel('Frequency (1/T)')
 ylabel('Power Spectral Density')
 title('Simulated PSD of 4-PAM Signal With Rectangular Pulse')
