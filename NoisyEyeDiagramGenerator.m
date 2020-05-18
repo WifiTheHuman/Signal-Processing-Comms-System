@@ -30,17 +30,16 @@ message=conv(upData,prcos);
 
 %add noise over channel
 
-Lrcos=length(message); 
-BER=[];
-noiseq=randn(Lrcos,1) ;
+msgLen=length(message); 
+noiseq=randn(msgLen,1) ;
 %Noisy Boi
-Eb2N = 10;                          % 10dB SNR (Eb/N)
-Eb2N_num=10^(Eb2N/10);           % Eb/N in linear scale
-Var_n=1/(2*Eb2N_num);               % 1/SNR is the noise variance
-signois=sqrt(Var_n);                % standard deviation
-awgnois=signois*noiseq;             % AWGN
+SNR = 10;                          % 10dB SNR (Eb/N)
+SNR=10^(SNR/10);           % Eb/N in linear scale
+Var_n=1/(2*SNR);               % 1/SNR is the noise variance
+signoise=sqrt(Var_n);                % standard deviation
+awgnoise=signoise*noiseq;             % AWGN
 % Add noise to signals at the channel output
-noisymessage=message+awgnois;
+noisymessage=message+awgnoise;
 
 rxmessage = conv(noisymessage,matchedFilter);
 
