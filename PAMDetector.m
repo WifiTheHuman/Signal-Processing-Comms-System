@@ -1,14 +1,14 @@
 clear;clf;
-fsamp = 50;%sample at 50 times data rate
+fsamp = 8;%sample at 50 times data rate
 
 %Generate raised cosine pulse with alpha = 1
-delay_rc = 2;
+delay_rc = 3;
 delayrc = 2 * delay_rc * fsamp;
 
 prcos = rcosdesign(1, delay_rc*2, fsamp);
-matchedFilter = prcos(end:-3:3);
+matchedFilter = prcos(end:-1:1);
 
-% Generating random signal data
+% Generating random signal data, 5000 symbols long, each symbol is 2 bits
 dataSize = 10000;
 dataArray = zeros(dataSize, 1);
 for i=1:dataSize
@@ -25,6 +25,7 @@ for i=1:dataSize
    end 
 end
 
+transpose(dataArray);
 upData = upsample(dataArray,fsamp);
 
 message=conv(upData,prcos);
@@ -36,12 +37,12 @@ SNRMAX = 10;
 SNRDB = zeros(SNRMAX, 1);
 BERSimulated = zeros(SNRMAX, 1);
 BERTheoretical = zeros(SNRMAX, 1);
-dataArray = zeros(dataSize, 1);
-for i = 1 : 1 : SNRMAX
+
+for i = 0 : 1 : SNRMAX
     %add noise over channel
     
-    SNRDB(i) = i;                          % 10dB SNR
-    SNR=10^(SNRDB(i)/10);           % SNR in linear scale
+    SNRDB(i+1) = i;                       % 10dB SNR
+    SNR=10^(SNRDB(i+1)/10);           % SNR in linear scale
     
     %%%%%%%%%%%%%%%%%%%%%
     %this part not needed for simulated error rate
@@ -55,17 +56,32 @@ for i = 1 : 1 : SNRMAX
     rxmessage = conv(noisymessage,matchedFilter);
     
     sampMsg = rxmessage(delayrc + 1:fsamp:end);
-    decisionisone = sign(sampMsg(1:dataSize));
-    BERTheoretical(i)=sum(abs(dataArray-decisionisone))/(2*dataSize);
     
-    %%%%%%%%%%%%%%%%%%%
+    decodedMsg = zeros(dataSize, 1);
+    for ii= 1 : 1 : dataSize
+        if sampMsg(ii) < 0
+            if sampMsg(ii) < -2
+                decodedMsg(ii) = -3;
+            else
+                decodedMsg(ii) = -1;
+            end
+        else
+            if sampMsg(ii) > 2
+                decodedMsg(ii) = 3;
+            else
+                decodedMsg(ii) = 1;
+            end
+        end
+    end
     
-    BERSimulated(i) = 0.5*erfc(sqrt(SNR));
+    BERTheoretical(i+1) = sum((abs(dataArray-decodedMsg) > 0))/(2 * dataSize)
+    
+    BERSimulated(i+1) = 0.5*erfc(sqrt(SNR));
 end
 
 figure(1)
-semilogy(SNRDB,BERSimulated, SNRDB,BERTheoretical+20);
+semilogy(SNRDB,BERSimulated, SNRDB,BERTheoretical);
 xlabel('SNR(dB)')
 ylabel('Bit Error Rate')
 title('Bit Error Rate vs SNR for 10000 Bits')
-legend('Simulated', 'Theoretical')
+legend('Analytical', 'Theoretical')
