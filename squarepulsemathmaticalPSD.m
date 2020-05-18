@@ -28,7 +28,7 @@ prectmatch=prect(end:-1:1);
 
 % Generating random signal data for polar signaling
 dataArray = zeros(1000, 1);
-for i=1:500
+for i=1:1000
    num = round(3*rand(1));
    switch (num) 
        case 0
