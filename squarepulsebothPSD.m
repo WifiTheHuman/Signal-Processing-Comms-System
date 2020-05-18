@@ -13,7 +13,7 @@ frequency = linspace(-frequency, frequency, frequency);
 S = 5 * Ts * (sinc(pi * frequency * Ts)).^2;
 
 figure(1);
-plot(S)
+plot(frequency, S)
 xlabel('Frequency (MHz)')
 ylabel('Power Spectral Density')
 title('Mathmatical PSD of 4-PAM Signal With Rectangular Pulse')
@@ -28,8 +28,9 @@ prect=prect/norm(prect);
 prectmatch=prect(end:-1:1);
 
 % Generating random signal data for polar signaling
-dataArray = zeros(1000, 1);
-for i=1:1000
+dataSize = 1000;
+dataArray = zeros(dataSize, 1);
+for i=1:dataSize
    rounded = round(3*rand(1));
    switch (rounded) 
        case 0
