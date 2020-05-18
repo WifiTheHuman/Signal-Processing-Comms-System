@@ -25,7 +25,6 @@ fsamp = 8;%sample at 8 times data rate
 % Generating a rectangular pulse shape
 prect=ones(1,fsamp);
 prect=prect/norm(prect);
-prectmatch=prect(end:-1:1);
 
 % Generating random signal data for polar signaling
 dataSize = 1000;
