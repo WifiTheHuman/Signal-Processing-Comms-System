@@ -1,5 +1,6 @@
-%This code generates a plot of PSM against bandwidth given frequency and
-%bandwidth using the mathmatical approach.
+%This code generates a plot of PSD for a rect() function
+%against bandwidth given frequency and
+%bandwidth using the mathmatical and simulated approach.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
