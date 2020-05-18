@@ -34,13 +34,17 @@ noiseq=randn(msgLen,1) ;
 
 SNRMAX = 10;
 SNRDB = zeros(SNRMAX, 1);
-BER = zeros(SNRMAX, 1);
+BERSimulated = zeros(SNRMAX, 1);
+BERTheoretical = zeros(SNRMAX, 1);
 dataArray = zeros(dataSize, 1);
 for i = 1 : 1 : SNRMAX
     %add noise over channel
     
     SNRDB(i) = i;                          % 10dB SNR
     SNR=10^(SNRDB(i)/10);           % SNR in linear scale
+    
+    %%%%%%%%%%%%%%%%%%%%%
+    %this part not needed for simulated error rate
     Var_n=1/(2*SNR);               % 1/SNR is the noise variance
     signoise=sqrt(Var_n);                % standard deviation
     awgnoise=signoise*noiseq;             % AWGN
@@ -50,14 +54,18 @@ for i = 1 : 1 : SNRMAX
     %apply matched filter
     rxmessage = conv(noisymessage,matchedFilter);
     
-    sampMsg = rxmessage(delayrc+1:fsamp:end);
+    sampMsg = rxmessage(delayrc + 1:fsamp:end);
     decisionisone = sign(sampMsg(1:dataSize));
+    BERTheoretical(i)=sum(abs(dataArray-decisionisone))/(2*dataSize);
     
-    BER(i) = 0.5*erfc(sqrt(SNR));
+    %%%%%%%%%%%%%%%%%%%
+    
+    BERSimulated(i) = 0.5*erfc(sqrt(SNR));
 end
 
 figure(1)
-semilogy(SNRDB,BER);
+semilogy(SNRDB,BERSimulated, SNRDB,BERTheoretical+20);
 xlabel('SNR(dB)')
 ylabel('Bit Error Rate')
-title('Bit Error Rate vs SNR')
+title('Bit Error Rate vs SNR for 10000 Bits')
+legend('Simulated', 'Theoretical')
