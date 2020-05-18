@@ -24,7 +24,7 @@ title('Mathmatical PSD of 4-PAM Signal With Raised Cosine Pulse')
 fsamp = 8;%sample at 8 times data rate
 
 %Generate raised cosine pulse with alpha = 1
-delay_rc=3;
+delay_rc = 3;
 prcos = rcosdesign( 1, delay_rc*2, fsamp);
 prmatch=prect(end:-1:1);
 
