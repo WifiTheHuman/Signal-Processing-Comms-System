@@ -1,3 +1,4 @@
+clear;clf;close all;
 fsamp = 8;%sample at 8 times data rate
 
 %Generate raised cosine pulse with alpha = 1

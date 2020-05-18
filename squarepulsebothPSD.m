@@ -51,7 +51,7 @@ message=conv(upData,prect);
 [Psd,f]=pwelch(message, [], [], [], 'twosided' ,fsamp);
 
 figure(2);
-figpsd2=semilogy(f-f_ovsamp/2,fftshift(Psd));
+figpsd2=semilogy(f-fsamp/2,fftshift(Psd));
 
 xlabel('Frequency (1/T)')
 ylabel('Power Spectral Density')

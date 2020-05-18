@@ -1,12 +1,13 @@
+clear;clf;
 fsamp = 8;%sample at 8 times data rate
 
 %Generate raised cosine pulse with alpha = 1
 delay_rc = 3;
-prcos = rcosdesign( 1, delay_rc*2, fsamp);
+prcos = rcosdesign(1, delay_rc*2, fsamp);
 matchedFilter = prcos(end:-1:1);
 
 % Generating random signal data for polar signaling
-dataSize = 1000;
+dataSize = 500;
 dataArray = zeros(dataSize, 1);
 for i=1:dataSize
    rounded = round(3*rand(1));
@@ -26,18 +27,22 @@ upData = upsample(dataArray,fsamp);
 
 message=conv(upData,prcos);
 
+
 %add noise over channel
 
-msgLen=length(message);
-noiseq=randn(msgLen,1) ;
-SNR = 10;                          % 10dB SNR 
-SNR = 10^(SNR/10);           % Convert to linear
-Var_n = 1/(2*SNR);               % 1/SNR is the noise variance
-signoise = sqrt(Var_n);                % standard deviation
-awgnoise = signoise * noiseq;             % AWGN
-noisymessage = message + awgnoise;
+Lrcos=length(message); 
+BER=[];
+noiseq=randn(Lrcos,1) ;
+%Noisy Boi
+Eb2N = 10;                          % 10dB SNR (Eb/N)
+Eb2N_num=10^(Eb2N/10);           % Eb/N in linear scale
+Var_n=1/(2*Eb2N_num);               % 1/SNR is the noise variance
+signois=sqrt(Var_n);                % standard deviation
+awgnois=signois*noiseq;             % AWGN
+% Add noise to signals at the channel output
+noisymessage=message+awgnois;
 
-rxmessage = conv(message,matchedFilter);
+rxmessage = conv(noisymessage,matchedFilter);
 
 Tau=8;
-eye1=eyediagram(z1,2*Tau,Tau,Tau/2);title('Filtered Signal Eye Diagram With Noise');
+eye1=eyediagram(rxmessage,2*Tau,Tau,Tau/2);title('Filtered Signal Eye Diagram With Noise');
