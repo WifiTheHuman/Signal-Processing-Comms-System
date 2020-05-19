@@ -74,9 +74,8 @@ for i = 0 : 1 : SNRMAX
         end
     end
     
-    BERTheoretical(i+1) = sum((abs(dataArray-decodedMsg) > 0))/(2 * dataSize)
-    
     BERSimulated(i+1) = 0.5*erfc(sqrt(SNR));
+    BERTheoretical(i+1) = sum((abs(dataArray-decodedMsg) > 0))/(2 * dataSize)
 end
 
 figure(1)
@@ -84,4 +83,4 @@ semilogy(SNRDB,BERSimulated, SNRDB,BERTheoretical);
 xlabel('SNR(dB)')
 ylabel('Bit Error Rate')
 title('Bit Error Rate vs SNR for 10000 Bits')
-legend('Analytical', 'Theoretical')
+legend('Analytical', 'Raised Cosine BER')
