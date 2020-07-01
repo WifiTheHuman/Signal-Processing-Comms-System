@@ -1,5 +1,5 @@
 # Signal-Processing-Wave-Generation
--This repository contains Matlab code to enable data transfer using a physical channel and a wave generator.  
+-This repository contains Matlab code written by WifiTheHuman which enables data transfer using a physical channel and a wave generator.  
   
 -Firstly the bitstream can be optionally encoded into 4-PAM to double the speed of transmission.  
   
